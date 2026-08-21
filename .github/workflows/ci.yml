@@ -26,7 +26,7 @@ jobs:
       - name: Test API
         run: |
           pip install -r requirements.txt -r requirements-dev.txt
-          pytest -q
+          PYTHONPATH=. pytest -q
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -84,3 +84,4 @@ jobs:
           git add chart/values.yaml
           git commit -m "chore: deploy image ${{ github.sha }}"
           git push
+
