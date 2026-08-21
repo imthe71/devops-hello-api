@@ -54,7 +54,7 @@ jobs:
           token: ${{ secrets.GITOPS_REPO_TOKEN }}
           path: gitops
 
-      - name: Update Helm image tag
+      - name: Update UAT Helm image tag
         env:
           IMAGE_TAG: ${{ github.sha }}
         run: |
@@ -63,7 +63,7 @@ jobs:
           import re
           from pathlib import Path
 
-          path = Path("gitops/chart/values.yaml")
+          path = Path("gitops/chart/values-uat.yaml")
           content = path.read_text(encoding="utf-8")
           updated = re.sub(
               r'(?m)^(  tag: ")[^"]+("$)',
@@ -81,7 +81,7 @@ jobs:
           cd gitops
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add chart/values.yaml
-          git commit -m "chore: deploy image ${{ github.sha }}"
+          git add chart/values-uat.yaml
+          git commit -m "chore: deploy UAT image ${{ github.sha }}"
           git push
 
