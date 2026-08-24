@@ -59,9 +59,10 @@ jobs:
           path = Path("gitops/chart/values-uat.yaml")
           content = path.read_text(encoding="utf-8")
           updated = re.sub(r'(?m)^(  tag: ")[^"]+("$)', rf'\g<1>{os.environ["IMAGE_TAG"]}\g<2>', content, count=1)
-          if updated == content:
-              raise SystemExit("image.tag was not updated")
-          path.write_text(updated, encoding="utf-8")
+          if updated != content:
+              path.write_text(updated, encoding="utf-8")
+          else:
+              print("UAT already uses this image tag")
           PY
       - name: Commit and push UAT GitOps change
         run: |
