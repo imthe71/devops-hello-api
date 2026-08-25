@@ -14,7 +14,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/devops-hello-api
+  IMAGE_NAME: ${{ github.repository_owner }}/devops-hello-api-private
 
 jobs:
   deploy-uat:
