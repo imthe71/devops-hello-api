@@ -47,3 +47,30 @@ def test_config_status_prefers_csi_file_over_environment(tmp_path, monkeypatch) 
     }
     assert "mounted-value" not in response.text
     assert "environment-value" not in response.text
+
+
+def test_database_endpoints_report_unconfigured_without_leaking_settings(monkeypatch) -> None:
+    for name in (
+        "DATABASE_HOST",
+        "DATABASE_PORT",
+        "DATABASE_NAME",
+        "DATABASE_USER",
+        "DATABASE_PASSWORD",
+    ):
+        monkeypatch.delenv(name, raising=False)
+
+    config = client.get("/config-status")
+    database = client.get("/db-status")
+    notes = client.get("/notes")
+
+    assert config.json()["database"] == {
+        "configured": False,
+        "source": "not_configured",
+    }
+    assert database.json() == {
+        "configured": False,
+        "reachable": False,
+        "source": "not_configured",
+    }
+    assert notes.status_code == 503
+    assert notes.json()["detail"] == "database_not_configured"
